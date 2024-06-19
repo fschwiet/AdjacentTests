@@ -79,7 +79,7 @@ public class NewTests
 1. Observe file ./Library/RFC3029/BarTests.cs contains some test code and the code to be tested. I like to start new files like this to get some initial code with test coverage working.
 2. For the class Bar in BarTests.cs, do the "Move to Bar.cs" refactoring.
 
-## Actual result
+### Actual result
 
 - The Bar class is moved to its own file, but it is placed in folder ./LibraryTests instead of remaining in ./Library/RFC3092.
 - The created file still uses the RFC3092 namespace which doesn't even correspond to its position.
@@ -94,7 +94,36 @@ public class NewTests
   }
   ```
   
-## Expected result:
+### Expected result:
 
 - The new Bar.cs file should be created in the original directory "./Library/RFC3092" as is.
 - The csprojs files should not be modified. The existing csproj rules will treat the class as part of the Library project, as expect.
+
+## Rider uses inappropriate namespace "a" for new files under undetermined circumstances when using the File System view of the project explorer:
+
+Below I give repro steps I was able to follow to start seeing the wrong namespace "a" get used for new files. However once I reverted the repro changes the issue persisted, so I'm not sure about the causal connection. I still see the issue whenever I add a class even after reverting the changes, clearing Rider's caches and cloning a prior commit of the repository to a new directory. 
+
+I noticed if I add a class to the Library from the "Solution" view of the solution explorer then the namespace is chosen correctly. Thats not the view I want to use though.
+
+### Steps to reproduce
+
+- Add an AssemblyName attribute to the TestLibrary.csproj. You can add it after the existing RootNamespace attribute:
+
+  ```
+  <PropertyGroup>
+    ...
+    <RootNamespace>Library</RootNamespace>
+    <AssemblyName>LibraryTests</AssemblyName>
+  </PropertyGroup>
+    ...
+  ```
+- Note the new AssemblyName being configured matches the default value. Nothing is really expected to change with this change to configuration.
+- From the "File System" view of the solution explorer, add a new class "Baz" and "BazTests"
+
+### Actual Results
+
+- A new class "Baz" and "BazTests" are added, but they are using the nonexistant namespace "a"
+- 
+### Expected Results
+
+- A new class "Baz" and "BazTests" are added, but they use the folder appropriate namespace "Library.RFC3092"
