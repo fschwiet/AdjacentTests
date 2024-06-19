@@ -58,10 +58,11 @@ public class NewTests
 ## Expected result
 
 - The new test should build and run as part of the test project.
+- - The Library.csproj file should not have been modified. The files disposition is already appropriately configured by the csproj files. Note that by removing the modification one can build and run the test.
 
 ## ActualResult
 
-- JetBrain's Rider has modified the Library.csproj file to include the test file, rather than let it be included by the test library:
+- JetBrain's Rider has modified the Library.csproj file to include the test file, rather than let it be included by the test library. The added line is the final Include here:
     ```
       <ItemGroup>
         <Compile Remove="**\*Test.cs" />
@@ -70,8 +71,30 @@ public class NewTests
         <Compile Include="RFC3092\NewTests.cs" />
       </ItemGroup>
     ```
-- See the last Include line.
+  
+## "Move to file", a command meant to split a class into its own file, displaces the file into the wrong project.
 
-## Expected Result
+### Steps to reproduce
 
-- The Library.csproj file should not have been modified. The files disposition is already appropriately configured by the csproj files. Note that by removing the modification one can build and run the test.
+1. Observe file ./Library/RFC3029/BarTests.cs contains some test code and the code to be tested. I like to start new files like this to get some initial code with test coverage working.
+2. For the class Bar in BarTests.cs, do the "Move to Bar.cs" refactoring.
+
+## Actual result
+
+- The Bar class is moved to its own file, but it is placed in folder ./LibraryTests instead of remaining in ./Library/RFC3092.
+- The created file still uses the RFC3092 namespace which doesn't even correspond to its position.
+
+- Here is the created file ./LibraryTests/Bar.cs
+  ```
+  namespace Library.RFC3092;
+  
+  public class Bar
+  {
+      public int Divide(int a, int b) => a / b;
+  }
+  ```
+  
+## Expected result:
+
+- The new Bar.cs file should be created in the original directory "./Library/RFC3092" as is.
+- The csprojs files should not be modified. The existing csproj rules will treat the class as part of the Library project, as expect.
