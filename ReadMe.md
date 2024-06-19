@@ -8,6 +8,8 @@ I am not claiming all tests should be adjacent like this, some tests might still
 
 Anyhow, you can see Foo.cs and FooTests.cs live next to each other in the same folder. Nice and easy.
 
+Well, while worth it overall, our developer environment may not know what to do with this. So I also wanted to use this repository to document issues using rider in such a situation. I don't know if Visual Studio fairs better or worse as I haven't tried it.
+
 ## Setup
 
 The configuration is achieved in the csproj files. We exclude test files from the library project and then import them into the test project. I also change the root namespace of the test project to match the targetted Library, this is optional. Either way the test files placed in Library project's folder would want to use the same namespaces as the Library code. 
@@ -33,3 +35,43 @@ The configuration is achieved in the csproj files. We exclude test files from th
 ## Miscellaneous notes
 
 The project explorer in Rider needs to be set to "File System" to see the source and test files next to each other.
+
+## Library.csproj file is updated to erroneously updated to include test files when adding test files
+
+### Steps to reproduce
+
+- From the project explorer, configured to "File System" in the dropdown at its top, right click on folder Library/RFC309 and "Add>Class". Name the class "NewTests.cs"
+- Add the test definition to the newly created file:
+```
+namespace Library.RFC3092;
+
+public class NewTests
+{
+	[Fact]
+	public void CanRunATest()
+	{
+		
+	}
+}
+```
+
+## Expected result
+
+- The new test should build and run as part of the test project.
+
+## ActualResult
+
+- JetBrain's Rider has modified the Library.csproj file to include the test file, rather than let it be included by the test library:
+    ```
+      <ItemGroup>
+        <Compile Remove="**\*Test.cs" />
+        <Compile Remove="**\*Tests.cs" />
+        <Compile Remove="**\*TestHelper.cs" />
+        <Compile Include="RFC3092\NewTests.cs" />
+      </ItemGroup>
+    ```
+- See the last Include line.
+
+## Expected Result
+
+- The Library.csproj file should not have been modified. The files disposition is already appropriately configured by the csproj files. Note that by removing the modification one can build and run the test.
