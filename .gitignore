@@ -1,0 +1,13 @@
+bin/
+obj/
+build/
+_ReSharper.*
+*.ncb
+*.aps
+*.suo
+*.sln.cache
+*.dotCover
+*.user
+.vs
+.cr/personal
+.idea
