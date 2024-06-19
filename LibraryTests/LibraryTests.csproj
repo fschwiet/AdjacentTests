@@ -7,6 +7,7 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <RootNamespace>Library</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,4 +27,9 @@
     <ProjectReference Include="..\Library\Library.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="../Library/**/*Test.cs" />
+    <Compile Include="../Library/**/*Tests.cs" />
+    <Compile Include="../Library/**/*TestHelper.cs" />
+  </ItemGroup>
 </Project>

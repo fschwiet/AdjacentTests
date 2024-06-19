@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="**\*Test.cs" />
+    <Compile Remove="**\*Tests.cs" />
+    <Compile Remove="**\*TestHelper.cs" />
+  </ItemGroup>
 </Project>
